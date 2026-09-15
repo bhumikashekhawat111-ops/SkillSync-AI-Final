@@ -41,6 +41,101 @@ document.addEventListener("DOMContentLoaded", () => {
      ============================================================ */
   const form = document.getElementById("login-form");
 
+n  /* ============================================================
+   OPPORTUNITY DATA - skill matching feature (Part 1A)
+   ============================================================ */
+  const OPPORTUNITIES = [
+    {
+      id: 1,
+      company: "TechNova Solutions",
+      role: "Software Engineering Intern",
+      requiredSkills: ["JavaScript", "HTML5", "CSS3"],
+      openingDate: "2024-01-15",
+      applicationDeadline: "2024-02-15",
+      startDate: "2024-02-01",
+    },
+    {
+      id: 2,
+      company: "DataFlow Analytics",
+      role: "Data Science Intern",
+      requiredSkills: ["Python", "Pandas", "NumPy"],
+      openingDate: "2024-01-20",
+      applicationDeadline: "2024-02-20",
+      startDate: "2024-02-10",
+    },
+    {
+      id: 3,
+      company: "CloudScale Corp",
+      role: "Cloud Infrastructure Intern",
+      requiredSkills: ["AWS Cloud", "Docker", "Kubernetes"],
+      openingDate: "2024-01-25",
+      applicationDeadline: "2024-02-25",
+      startDate: "2024-02-15",
+    },
+    {
+      id: 4,
+      company: "WebDev Studios",
+      role: "Frontend Developer Intern",
+      requiredSkills: ["React", "JavaScript", "HTML5"],
+      openingDate: "2024-01-10",
+      applicationDeadline: "2024-02-10",
+      startDate: "2024-01-28",
+    },
+    {
+      id: 5,
+      company: "AI Innovations Inc.",
+      role: "Machine Learning Intern",
+      requiredSkills: ["Python", "Machine Learning", "TensorFlow"],
+      openingDate: "2024-02-01",
+      applicationDeadline: "2024-03-01",
+      startDate: "2024-03-15",
+    },
+    {
+      id: 6,
+      company: "FullStack Labs",
+      role: "Full Stack Developer Intern",
+      requiredSkills: ["JavaScript", "React", "Node.js"],
+      openingDate: "2024-02-05",
+      applicationDeadline: "2024-03-05",
+      startDate: "2024-03-18",
+    },
+    {
+      id: 7,
+      company: "CyberSecure Ltd.",
+      role: "Security Operations Intern",
+      requiredSkills: ["Problem Solving", "Network Security", "Python"],
+      openingDate: "2024-02-10",
+      applicationDeadline: "2024-03-10",
+      startDate: "2024-03-20",
+    },
+    {
+      id: 8,
+      company: "DesignCo",
+      role: "UI/UX Design Intern",
+      requiredSkills: ["UI/UX Design", "Figma", "Adobe Creative Suite"],
+      openingDate: "2024-02-15",
+      applicationDeadline: "2024-03-15",
+      startDate: "2024-03-25",
+    },
+    {
+      id: 9,
+      company: "GitHub Enterprise",
+      role: "Developer Experience Intern",
+      requiredSkills: ["Git & GitHub", "JavaScript", "Markdown"],
+      openingDate: "2024-02-20",
+      applicationDeadline: "2024-03-20",
+      startDate: "2024-04-01",
+    },
+    {
+      id: 10,
+      company: "ExcelPro Systems",
+      role: "Data Analysis Intern",
+      requiredSkills: ["Data Analysis", "Excel", "SQL"],
+      openingDate: "2024-02-25",
+      applicationDeadline: "2024-03-25",
+      startDate: "2024-04-05",
+    },
+  ];
   if (form) {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -235,6 +330,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function requireSelect(id, errId, message, value) {
     const select = document.getElementById(id);
     const err = document.getElementById(errId);
+}
+
+/* ============================================================
+   REUSABLE MATCHING LOGIC (Task 1B)
+   Accepts an opportunity object and user skills array, returns match data
+   ============================================================ */
+function calculateOpportunityMatch(opp, userSkills) {
+  const requiredSet = new Set(opp.requiredSkills);
+  const userSet = new Set(userSkills);
+  const matching = opp.requiredSkills.filter((s) => userSet.has(s));
+  const missing = opp.requiredSkills.filter((s) => !userSet.has(s));
+  const pct = ((matching.length / opp.requiredSkills.length) * 100).toFixed(1);
+  return { pct, matching, missing };
+}
+
+/* ============================================================
+     DASHBOARD PAGE (dashboard.html)
     if (value) {
       select.classList.remove("invalid");
       err.textContent = "";
@@ -282,6 +394,51 @@ document.addEventListener("DOMContentLoaded", () => {
           skillsBox.appendChild(chip);
         });
       }
+
+      // Calculate and display opportunity matches
+      const userSkills = profile.skills || [];
+      const matchedOpportunities = OPPORTUNITIES.map((opp) =>
+        calculateOpportunityMatch(opp, userSkills)
+      );
+
+      // Sort by highest match percentage (descending)
+      matchedOpportunities.sort((a, b) => b.pct - a.pct);
+
+      const matchesSection = document.createElement("div");
+      matchesSection.className = "opportunity-matches";
+      matchesSection.innerHTML = '<h3>Opportunity Matches</h3>';
+      const matchesGrid = document.createElement("div");
+      matchesGrid.className = "matches-grid";
+      matchedOpportunities.forEach((match, idx) => {
+        const opp = OPPORTUNITIES[idx];
+        const { pct, matching, missing } = match;
+        // Recommended skills are the missing skills from this opportunity's required list
+        // (skills the user should learn to improve their match)
+        const recommended = missing.slice(0, 2);
+        const card = document.createElement("div");
+        card.className = "match-card";
+        card.innerHTML = `
+          <div>
+            <strong>${opp.company}: ${opp.role}</strong>
+            <br />
+            <span>Match: ${pct}%</span>
+          </div>
+          <div>
+            <span>Matching: ${matching.length > 0 ? matching.join(", ") : "None"}</span>
+            <br />
+            <span>Missing: ${missing.length > 0 ? missing.join(", ") : "None"}</span>
+            ${recommended.length > 0
+              ? `<br /><span>Recommended: ${recommended.join(", ")}</span>`
+              : ""}
+            <br />
+            <span>Deadline: ${opp.applicationDeadline}</span>
+          </div>
+        `;
+        matchesGrid.appendChild(card);
+      });
+      matchesSection.appendChild(matchesGrid);
+      const skillsBoxParent = document.getElementById("dash-skills").parentNode;
+      skillsBoxParent.insertBefore(matchesSection, skillsBox.nextSibling);
     }
 
     /* ---------- Logout ---------- */
