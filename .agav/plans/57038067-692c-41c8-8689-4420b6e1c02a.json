@@ -1,0 +1,33 @@
+{
+  "goal": "Compare user skills with opportunity requirements, calculate match percentages, and save results to script.js without altering existing functionality.",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Load user skill data and opportunity requirement data",
+      "description": "Parse existing user skills and each opportunity's required skills from their respective data sources.",
+      "status": "in_progress",
+      "verifyCommand": "test -f skills.json && echo 'Source data exists'"
+    },
+    {
+      "id": 2,
+      "title": "Calculate match percentage, matching skills, and missing skills",
+      "description": "For every opportunity, compute match % as (matching required skills / total required skills)*100, list matching and missing skills.",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "title": "Run existing verification checks and fix errors",
+      "description": "Execute existing checks ensuring login and profile functionality remain unchanged; resolve any identified issues.",
+      "status": "pending"
+    },
+    {
+      "id": 4,
+      "title": "Validate results and save to script.js",
+      "description": "Check results against file entries, then save the output to script.js while preserving all previously written code.",
+      "status": "pending",
+      "verifyCommand": "test -f script.js && echo 'script.js verified'"
+    }
+  ],
+  "createdAt": "2026-09-15T13:18:20.257Z",
+  "currentStep": 0
+}
