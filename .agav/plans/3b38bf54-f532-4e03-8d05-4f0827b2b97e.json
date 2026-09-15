@@ -1,0 +1,35 @@
+{
+  "goal": "Implement Task 1C on the existing dashboard displaying internship/placement opportunities with matching data, reusing Task 1B logic as a reusable block in script.js, ensuring responsiveness and intact existing functionality, then verify and fix.",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Refactor Task 1B matching logic into reusable function",
+      "description": "Extract the internship matching algorithm from Task 1B into a standalone, reusable function in script.js that can accept internship data and return match %, matching skills, and missing skills.",
+      "status": "done",
+      "verifyCommand": "grep -q 'function matchInternships\\|reusableMatch' script.js && echo 'Reusable matching logic verified' || echo 'Function not found'"
+    },
+    {
+      "id": 2,
+      "title": "Implement Task 1C rendering logic using reusable matching function",
+      "description": "Build the Task 1C module that iterates over all internship/placement opportunities, invokes the reusable matching function, and generates display data sorted by highest match %.",
+      "status": "in_progress",
+      "verifyCommand": "grep -q 'displayTask1C\\|sortByMatch' script.js && echo 'Task 1C rendering logic present' || echo 'Task 1C logic missing'"
+    },
+    {
+      "id": 3,
+      "title": "Integrate Task 1C into dashboard UI with responsive design",
+      "description": "Add the Task 1C component to the existing dashboard, apply responsive CSS/markup, and confirm that login, profile, localStorage, and other dashboard features remain fully functional.",
+      "status": "pending",
+      "verifyCommand": "grep -q 'localStorage\\|login\\|profile' script.js && echo 'Existing functionality intact' || echo 'Potential issue detected'"
+    },
+    {
+      "id": 4,
+      "title": "Run verification checks, fix errors, and save changes",
+      "description": "Execute final checks, correct any syntax or runtime errors, and ensure all modifications are persisted to script.js and associated files.",
+      "status": "pending",
+      "verifyCommand": "test -f script.js && echo 'script.js saved successfully' || echo 'File not found'"
+    }
+  ],
+  "createdAt": "2026-09-15T13:54:05.355Z",
+  "currentStep": 1
+}

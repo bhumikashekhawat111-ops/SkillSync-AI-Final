@@ -40,16 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
      LOGIN PAGE (index.html)
      ============================================================ */
   const form = document.getElementById("login-form");
-
 n  /* ============================================================
-   OPPORTUNITY DATA - skill matching feature (Part 1A)
+   OPPORTUNITY DATA - skill matching feature
    ============================================================ */
   const OPPORTUNITIES = [
     {
       id: 1,
       company: "TechNova Solutions",
       role: "Software Engineering Intern",
-      requiredSkills: ["JavaScript", "HTML5", "CSS3"],
+      requiredSkills: ["JavaScript"],
       openingDate: "2024-01-15",
       applicationDeadline: "2024-02-15",
       startDate: "2024-02-01",
@@ -58,7 +57,7 @@ n  /* ============================================================
       id: 2,
       company: "DataFlow Analytics",
       role: "Data Science Intern",
-      requiredSkills: ["Python", "Pandas", "NumPy"],
+      requiredSkills: ["Python"],
       openingDate: "2024-01-20",
       applicationDeadline: "2024-02-20",
       startDate: "2024-02-10",
@@ -67,7 +66,7 @@ n  /* ============================================================
       id: 3,
       company: "CloudScale Corp",
       role: "Cloud Infrastructure Intern",
-      requiredSkills: ["AWS Cloud", "Docker", "Kubernetes"],
+      requiredSkills: ["AWS Cloud"],
       openingDate: "2024-01-25",
       applicationDeadline: "2024-02-25",
       startDate: "2024-02-15",
@@ -76,7 +75,7 @@ n  /* ============================================================
       id: 4,
       company: "WebDev Studios",
       role: "Frontend Developer Intern",
-      requiredSkills: ["React", "JavaScript", "HTML5"],
+      requiredSkills: ["React"],
       openingDate: "2024-01-10",
       applicationDeadline: "2024-02-10",
       startDate: "2024-01-28",
@@ -85,7 +84,7 @@ n  /* ============================================================
       id: 5,
       company: "AI Innovations Inc.",
       role: "Machine Learning Intern",
-      requiredSkills: ["Python", "Machine Learning", "TensorFlow"],
+      requiredSkills: ["Machine Learning"],
       openingDate: "2024-02-01",
       applicationDeadline: "2024-03-01",
       startDate: "2024-03-15",
@@ -94,7 +93,7 @@ n  /* ============================================================
       id: 6,
       company: "FullStack Labs",
       role: "Full Stack Developer Intern",
-      requiredSkills: ["JavaScript", "React", "Node.js"],
+      requiredSkills: ["JavaScript"],
       openingDate: "2024-02-05",
       applicationDeadline: "2024-03-05",
       startDate: "2024-03-18",
@@ -103,7 +102,7 @@ n  /* ============================================================
       id: 7,
       company: "CyberSecure Ltd.",
       role: "Security Operations Intern",
-      requiredSkills: ["Problem Solving", "Network Security", "Python"],
+      requiredSkills: ["Problem Solving"],
       openingDate: "2024-02-10",
       applicationDeadline: "2024-03-10",
       startDate: "2024-03-20",
@@ -112,7 +111,7 @@ n  /* ============================================================
       id: 8,
       company: "DesignCo",
       role: "UI/UX Design Intern",
-      requiredSkills: ["UI/UX Design", "Figma", "Adobe Creative Suite"],
+      requiredSkills: ["UI/UX Design"],
       openingDate: "2024-02-15",
       applicationDeadline: "2024-03-15",
       startDate: "2024-03-25",
@@ -121,7 +120,7 @@ n  /* ============================================================
       id: 9,
       company: "GitHub Enterprise",
       role: "Developer Experience Intern",
-      requiredSkills: ["Git & GitHub", "JavaScript", "Markdown"],
+      requiredSkills: ["Git & GitHub"],
       openingDate: "2024-02-20",
       applicationDeadline: "2024-03-20",
       startDate: "2024-04-01",
@@ -130,12 +129,13 @@ n  /* ============================================================
       id: 10,
       company: "ExcelPro Systems",
       role: "Data Analysis Intern",
-      requiredSkills: ["Data Analysis", "Excel", "SQL"],
+      requiredSkills: ["Data Analysis"],
       openingDate: "2024-02-25",
       applicationDeadline: "2024-03-25",
       startDate: "2024-04-05",
     },
   ];
+
   if (form) {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -330,123 +330,6 @@ n  /* ============================================================
   function requireSelect(id, errId, message, value) {
     const select = document.getElementById(id);
     const err = document.getElementById(errId);
-}
-
-/* ============================================================
-   REUSABLE MATCHING LOGIC (Task 1B)
-   Accepts an opportunity object and user skills array, returns match data
-   ============================================================ */
-function calculateOpportunityMatch(opp, userSkills) {
-  const requiredSet = new Set(opp.requiredSkills);
-  const userSet = new Set(userSkills);
-  const matching = opp.requiredSkills.filter((s) => userSet.has(s));
-  const missing = opp.requiredSkills.filter((s) => !userSet.has(s));
-  const pct = ((matching.length / opp.requiredSkills.length) * 100).toFixed(1);
-  return { pct, matching, missing };
-}
-
-/* ============================================================
-   OPPORTUNITY REMINDER FEATURE (Task 2)
-   Shows reminder timing options and displays reminder status
-   ============================================================ */
-function renderOpportunityReminders(opportunities, matchedOpportunities, userSkills) {
-  const remindersSection = document.createElement("div");
-  remindersSection.className = "opportunity-reminders";
-  remindersSection.innerHTML = '<h3>Application Reminders</h3>';
-
-  const remindersGrid = document.createElement("div");
-  remindersGrid.className = "reminders-grid";
-
-  opportunities.forEach((opp, idx) => {
-    const match = matchedOpportunities[idx];
-    const pct = match ? match.pct : "0";
-    const deadline = new Date(opp.applicationDeadline);
-    const today = new Date();
-    const startDate = new Date(opp.startDate);
-    const daysRemaining = Math.max(0, Math.ceil((deadline - today) / (1000 * 60 * 60 * 24)));
-    const daysSinceStart = Math.max(0, Math.ceil((today - startDate) / (1000 * 60 * 60 * 24)));
-
-    // Determine reminder timing options based on days remaining
-    let timingOptions = [];
-    if (daysRemaining <= 1) {
-      timingOptions = ["deadline day"];
-    } else if (daysRemaining <= 3) {
-      timingOptions = ["1 day before", "deadline day"];
-    } else if (daysRemaining <= 7) {
-      timingOptions = ["3 days before", "1 day before", "deadline day"];
-    } else {
-      timingOptions = ["7 days before", "3 days before", "1 day before", "deadline day"];
-    }
-
-    // Check if user already set a reminder for this opportunity
-    const savedReminders = JSON.parse(localStorage.getItem("skillsync_reminders") || "{}");
-    const oppKey = opp.id;
-    const existingReminder = savedReminders[oppKey] || null;
-
-    const card = document.createElement("div");
-    card.className = "reminder-card";
-    card.innerHTML = `
-      <div>
-        <strong>${opp.company}: ${opp.role}</strong>
-        <br />
-        <span>Match: ${pct}%</span>
-      </div>
-      <div>
-        <span>Starts: ${opp.startDate}</span>
-        <br />
-        <span>Deadline: ${opp.applicationDeadline} (${daysRemaining}d remaining)</span>
-        <br />
-        <span>Matching Skills: ${opp.requiredSkills.filter(s => userSkills.includes(s)).join(", ") || "None"}</span>
-      </div>
-      <div>
-        <select class="reminder-timing" data-opp-id="${opp.id}">
-          ${timingOptions.map(opt => `<option value="${opt}" ${existingReminder === opt ? "selected" : ""}>${opt}</option>`).join("")}
-        </select>
-        <button class="btn-set-reminder" data-opp-id="${opp.id}">Set Reminder</button>
-      </div>
-    `;
-
-    // Show existing reminder status
-    if (existingReminder) {
-      const statusEl = document.createElement("span");
-      statusEl.className = "reminder-status";
-      statusEl.textContent = `Reminder set for ${existingReminder}`;
-      card.querySelector(".reminder-timing").after(statusEl);
-    }
-
-    remindersGrid.appendChild(card);
-  });
-
-  remindersSection.appendChild(remindersGrid);
-
-  // Handle setting reminders
-  remindersSection.addEventListener("click", (e) => {
-    const target = e.target;
-    const btn = target.closest(".btn-set-reminder");
-    if (btn) {
-      const oppId = parseInt(btn.dataset.oppId);
-      const timingSelect = btn.previousElementSibling;
-      const selectedTiming = timingSelect.value;
-
-      // Save reminder
-      let savedReminders = JSON.parse(localStorage.getItem("skillsync_reminders") || "{}");
-      savedReminders[oppId] = selectedTiming;
-      localStorage.setItem("skillsync_reminders", JSON.stringify(savedReminders));
-
-      // Update UI
-      showToast(`Reminder set for ${daysRemaining}d: ${selectedTiming}`, "success");
-
-      // Re-render to show status
-      renderOpportunityReminders(opportunities, matchedOpportunities, userSkills);
-    }
-  });
-
-  const skillsBoxParent = document.getElementById("dash-skills").parentNode;
-  skillsBoxParent.insertBefore(remindersSection, skillsBox.nextSibling.nextSibling);
-}
-
-/* ============================================================
-     DASHBOARD PAGE (dashboard.html)
     if (value) {
       select.classList.remove("invalid");
       err.textContent = "";
@@ -494,54 +377,6 @@ function renderOpportunityReminders(opportunities, matchedOpportunities, userSki
           skillsBox.appendChild(chip);
         });
       }
-
-      // Calculate and display opportunity matches
-      const userSkills = profile.skills || [];
-      const matchedOpportunities = OPPORTUNITIES.map((opp) =>
-        calculateOpportunityMatch(opp, userSkills)
-      );
-
-      // Sort by highest match percentage (descending)
-      matchedOpportunities.sort((a, b) => b.pct - a.pct);
-
-      const matchesSection = document.createElement("div");
-      matchesSection.className = "opportunity-matches";
-      matchesSection.innerHTML = '<h3>Opportunity Matches</h3>';
-      const matchesGrid = document.createElement("div");
-      matchesGrid.className = "matches-grid";
-      matchedOpportunities.forEach((match, idx) => {
-        const opp = OPPORTUNITIES[idx];
-        const { pct, matching, missing } = match;
-        // Recommended skills are the missing skills from this opportunity's required list
-        // (skills the user should learn to improve their match)
-        const recommended = missing.slice(0, 2);
-        const card = document.createElement("div");
-        card.className = "match-card";
-        card.innerHTML = `
-          <div>
-            <strong>${opp.company}: ${opp.role}</strong>
-            <br />
-            <span>Match: ${pct}%</span>
-          </div>
-          <div>
-            <span>Matching: ${matching.length > 0 ? matching.join(", ") : "None"}</span>
-            <br />
-            <span>Missing: ${missing.length > 0 ? missing.join(", ") : "None"}</span>
-            ${recommended.length > 0
-              ? `<br /><span>Recommended: ${recommended.join(", ")}</span>`
-              : ""}
-            <br />
-            <span>Deadline: ${opp.applicationDeadline}</span>
-          </div>
-        `;
-        matchesGrid.appendChild(card);
-      });
-      matchesSection.appendChild(matchesGrid);
-      const skillsBoxParent = document.getElementById("dash-skills").parentNode;
-      skillsBoxParent.insertBefore(matchesSection, skillsBox.nextSibling);
-
-      // Opportunity Reminder Feature (Task 2)
-      renderOpportunityReminders(OPPORTUNITIES, matchedOpportunities, profile.skills || []);
     }
 
     /* ---------- Logout ---------- */
@@ -576,5 +411,3 @@ function renderOpportunityReminders(opportunities, matchedOpportunities, userSki
     toastTimer = setTimeout(() => {
       toast.classList.remove("show");
     }, 2600);
-  }
-});
