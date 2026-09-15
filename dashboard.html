@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillSync-AI | Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="login-card dashboard-card" aria-label="Dashboard">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">S</div>
+        <h1>Welcome to <span>SkillSyncAI</span></h1>
+        <p class="tagline">You're logged in. Nice to see you again!</p>
+      </div>
+
+      <div class="dash-profile">
+        <p><strong>Name:</strong> <span id="dash-name">—</span></p>
+        <p><strong>College:</strong> <span id="dash-college">—</span></p>
+        <p><strong>Branch:</strong> <span id="dash-branch">—</span></p>
+        <p><strong>Year:</strong> <span id="dash-year">—</span></p>
+      </div>
+
+      <p class="dash-note">Your selected skills:</p>
+      <div class="dash-skills" id="dash-skills"></div>
+
+      <button type="button" class="btn-primary" id="logout-btn">Logout</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

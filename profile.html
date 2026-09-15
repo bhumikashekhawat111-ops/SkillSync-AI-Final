@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillSync-AI | Complete your profile</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="login-card profile-card" aria-label="Profile setup">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">S</div>
+        <h1>Complete your <span>Profile</span></h1>
+        <p class="tagline">Tell us about yourself so we can match your skills.</p>
+      </div>
+
+      <form id="profile-form" novalidate>
+        <!-- Full Name -->
+        <div class="field">
+          <label for="full-name">Full Name</label>
+          <div class="input-wrap">
+            <input type="text" id="full-name" name="fullName"
+              placeholder="e.g. Ananya Sharma" autocomplete="name" required />
+          </div>
+          <small class="error-msg" id="name-error" role="alert"></small>
+        </div>
+
+        <!-- College -->
+        <div class="field">
+          <label for="college">College Name</label>
+          <div class="input-wrap">
+            <input type="text" id="college" name="college"
+              placeholder="e.g. ABC Institute of Technology" required />
+          </div>
+          <small class="error-msg" id="college-error" role="alert"></small>
+        </div>
+
+        <!-- Branch + Year -->
+        <div class="grid-2">
+          <div class="field">
+            <label for="branch">Branch</label>
+            <div class="input-wrap">
+              <input type="text" id="branch" name="branch"
+                placeholder="e.g. Computer Science" required />
+            </div>
+            <small class="error-msg" id="branch-error" role="alert"></small>
+          </div>
+
+          <div class="field">
+            <label for="year">Year</label>
+            <div class="input-wrap select-wrap">
+              <select id="year" name="year" required>
+                <option value="" disabled selected>Select year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+              </select>
+            </div>
+            <small class="error-msg" id="year-error" role="alert"></small>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="field">
+          <label id="skills-label">Select your skills (choose all that apply)</label>
+          <div class="skills-grid" role="group" aria-labelledby="skills-label">
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Python" /> <span>Python</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="JavaScript" /> <span>JavaScript</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Java" /> <span>Java</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="C++" /> <span>C++</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="C" /> <span>C</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="SQL" /> <span>SQL</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="HTML & CSS" /> <span>HTML &amp; CSS</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="React" /> <span>React</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Node.js" /> <span>Node.js</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="TypeScript" /> <span>TypeScript</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Data Structures" /> <span>Data Structures</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Algorithms" /> <span>Algorithms</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Machine Learning" /> <span>Machine Learning</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Deep Learning" /> <span>Deep Learning</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Data Analysis" /> <span>Data Analysis</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Android Development" /> <span>Android</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="iOS Development" /> <span>iOS</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Flutter" /> <span>Flutter</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Git & GitHub" /> <span>Git &amp; GitHub</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Docker" /> <span>Docker</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Cloud (AWS)" /> <span>AWS Cloud</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Communication" /> <span>Communication</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Leadership" /> <span>Leadership</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Teamwork" /> <span>Teamwork</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Problem Solving" /> <span>Problem Solving</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Public Speaking" /> <span>Public Speaking</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="UI/UX Design" /> <span>UI/UX Design</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Figma" /> <span>Figma</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="Excel" /> <span>Excel</span>
+            </label>
+            <label class="skill-chip">
+              <input type="checkbox" name="skills" value="PowerPoint" /> <span>PowerPoint</span>
+            </label>
+          </div>
+          <small class="error-msg" id="skills-error" role="alert"></small>
+        </div>
+
+        <button type="submit" class="btn-primary" id="continue-btn">Continue</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

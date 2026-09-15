@@ -7,6 +7,7 @@
   --pink-50:  #fff5f9;
   --pink-100: #ffe4f0;
   --pink-200: #ffc9e0;
+  --pink-300: #f9a8d4;
   --pink-400: #f472b6;
   --pink-500: #ec4899;
   --pink-600: #db2777;
@@ -305,6 +306,21 @@ label {
   color: var(--muted);
 }
 
+/* ---------- Dashboard ---------- */
+.dashboard-card {
+  text-align: center;
+}
+
+.dash-note {
+  margin: 18px 0 24px;
+  padding: 16px;
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--pink-50);
+  border: 1px dashed var(--pink-200);
+  border-radius: 12px;
+}
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;
@@ -333,6 +349,147 @@ label {
 .toast.success { background: var(--success); }
 .toast.error   { background: var(--error); }
 
+/* ---------- Profile page ---------- */
+.profile-card {
+  max-width: 640px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* text input without an icon still needs left padding */
+.profile-card .input-wrap input {
+  padding-left: 14px;
+}
+
+/* select styling */
+.select-wrap select {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--pink-50);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.select-wrap select:focus {
+  background: var(--white);
+  border-color: var(--pink-400);
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
+}
+
+.select-wrap select.invalid {
+  border-color: var(--error);
+  background: #fff1f2;
+}
+
+/* skills grid */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--pink-50);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.skill-chip input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--pink-500);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.skill-chip:hover {
+  border-color: var(--pink-300, #f9a8d4);
+}
+
+.skill-chip:has(input:checked) {
+  background: var(--pink-100);
+  border-color: var(--pink-500);
+  color: var(--pink-700);
+  font-weight: 600;
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard-card {
+  text-align: center;
+  max-width: 520px;
+}
+
+.dash-note {
+  margin: 18px 0 12px;
+  padding: 16px;
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--pink-50);
+  border: 1px dashed var(--pink-200);
+  border-radius: 12px;
+}
+
+.dash-profile {
+  margin: 18px 0;
+  text-align: left;
+  background: var(--pink-50);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 14.5px;
+  line-height: 1.9;
+}
+
+.dash-profile strong {
+  color: var(--ink);
+  min-width: 70px;
+  display: inline-block;
+}
+
+.dash-profile span {
+  color: var(--pink-700);
+  font-weight: 500;
+}
+
+.dash-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.skill-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-700);
+  background: var(--pink-100);
+  border: 1px solid var(--pink-200);
+  border-radius: 999px;
+}
+
 /* ---------- Mobile tweaks ---------- */
 @media (max-width: 480px) {
   .page {
@@ -343,6 +500,15 @@ label {
   .login-card {
     padding: 26px 20px;
     border-radius: 20px;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .brand h1 {
@@ -366,6 +532,10 @@ label {
 
   .login-card {
     max-width: 440px;
+  }
+
+  .profile-card {
+    max-width: 640px;
   }
 }
 

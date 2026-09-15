@@ -1,128 +1,305 @@
 /* ============================================================
-   SkillSync-AI Login — validation & interactions
+   SkillSync-AI — login, profile & dashboard logic
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
+  const SESSION_KEY = "skillsync_session";
+  const PROFILE_KEY = "skillsync_profile";
+
+  /* ---------- Session helpers (shared by all pages) ---------- */
+  function getSession() {
+    try {
+      return localStorage.getItem(SESSION_KEY);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setSession() {
+    try {
+      localStorage.setItem(SESSION_KEY, "active");
+    } catch (_) { /* storage unavailable — ignore */ }
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (_) { /* storage unavailable — ignore */ }
+  }
+
+  function getProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /* ============================================================
+     LOGIN PAGE (index.html)
+     ============================================================ */
   const form = document.getElementById("login-form");
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const toggleBtn = document.getElementById("toggle-password");
-  const emailError = document.getElementById("email-error");
-  const passwordError = document.getElementById("password-error");
-  const loginBtn = document.getElementById("login-btn");
 
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const MIN_PASSWORD_LENGTH = 6;
+  if (form) {
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const toggleBtn = document.getElementById("toggle-password");
+    const emailError = document.getElementById("email-error");
+    const passwordError = document.getElementById("password-error");
+    const loginBtn = document.getElementById("login-btn");
 
-  /* ---------- Password show / hide ---------- */
-  toggleBtn.addEventListener("click", () => {
-    const hidden = password.type === "password";
-    password.type = hidden ? "text" : "password";
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const MIN_PASSWORD_LENGTH = 6;
 
-    toggleBtn.setAttribute("aria-pressed", String(hidden));
-    toggleBtn.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
-
-    const eye = toggleBtn.querySelector(".icon-eye");
-    const eyeOff = toggleBtn.querySelector(".icon-eye-off");
-    eye.hidden = hidden;       // eye visible while password is hidden
-    eyeOff.hidden = !hidden;   // eye-off visible once password is shown
-
-    // keep focus in the field after toggling
-    password.focus();
-  });
-
-  /* ---------- Validation helpers ---------- */
-  function setError(input, msgEl, message) {
-    if (message) {
-      input.classList.add("invalid");
-      msgEl.textContent = message;
-      msgEl.classList.remove("show");
-      // restart shake animation
-      void msgEl.offsetWidth;
-      msgEl.classList.add("show");
-    } else {
-      input.classList.remove("invalid");
-      msgEl.textContent = "";
-      msgEl.classList.remove("show");
-    }
-  }
-
-  function validateEmail(showError = true) {
-    const value = email.value.trim();
-    let message = "";
-
-    if (!value) message = "Email is required.";
-    else if (!EMAIL_RE.test(value)) message = "Enter a valid email address.";
-
-    if (showError || message === "") setError(email, emailError, message);
-    return message === "";
-  }
-
-  function validatePassword(showError = true) {
-    const value = password.value;
-    let message = "";
-
-    if (!value) message = "Password is required.";
-    else if (value.length < MIN_PASSWORD_LENGTH)
-      message = "Password must be at least 6 characters.";
-
-    if (showError || message === "") setError(password, passwordError, message);
-    return message === "";
-  }
-
-  /* ---------- Live feedback ---------- */
-  email.addEventListener("blur", () => validateEmail(true));
-  email.addEventListener("input", () => {
-    if (emailError.textContent) validateEmail(true);
-  });
-
-  password.addEventListener("blur", () => validatePassword(true));
-  password.addEventListener("input", () => {
-    if (passwordError.textContent) validatePassword(true);
-  });
-
-  /* ---------- Submit ---------- */
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const okEmail = validateEmail(true);
-    const okPassword = validatePassword(true);
-
-    if (!okEmail) {
-      email.focus();
+    // Already logged in (via "Remember me")? Skip straight to profile.
+    if (getSession() === "active") {
+      window.location.replace("profile.html");
       return;
     }
-    if (!okPassword) {
+
+    /* ---------- Password show / hide ---------- */
+    toggleBtn.addEventListener("click", () => {
+      const hidden = password.type === "password";
+      password.type = hidden ? "text" : "password";
+
+      toggleBtn.setAttribute("aria-pressed", String(hidden));
+      toggleBtn.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+
+      const eye = toggleBtn.querySelector(".icon-eye");
+      const eyeOff = toggleBtn.querySelector(".icon-eye-off");
+      eye.hidden = hidden;
+      eyeOff.hidden = !hidden;
+
       password.focus();
+    });
+
+    /* ---------- Validation helpers ---------- */
+    function setError(input, msgEl, message) {
+      if (message) {
+        input.classList.add("invalid");
+        msgEl.textContent = message;
+        msgEl.classList.remove("show");
+        void msgEl.offsetWidth;
+        msgEl.classList.add("show");
+      } else {
+        input.classList.remove("invalid");
+        msgEl.textContent = "";
+        msgEl.classList.remove("show");
+      }
+    }
+
+    function validateEmail(showError = true) {
+      const value = email.value.trim();
+      let message = "";
+
+      if (!value) message = "Email is required.";
+      else if (!EMAIL_RE.test(value)) message = "Enter a valid email address.";
+
+      if (showError || message === "") setError(email, emailError, message);
+      return message === "";
+    }
+
+    function validatePassword(showError = true) {
+      const value = password.value;
+      let message = "";
+
+      if (!value) message = "Password is required.";
+      else if (value.length < MIN_PASSWORD_LENGTH)
+        message = "Password must be at least 6 characters.";
+
+      if (showError || message === "") setError(password, passwordError, message);
+      return message === "";
+    }
+
+    /* ---------- Live feedback ---------- */
+    email.addEventListener("blur", () => validateEmail(true));
+    email.addEventListener("input", () => {
+      if (emailError.textContent) validateEmail(true);
+    });
+
+    password.addEventListener("blur", () => validatePassword(true));
+    password.addEventListener("input", () => {
+      if (passwordError.textContent) validatePassword(true);
+    });
+
+    /* ---------- Submit ---------- */
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const okEmail = validateEmail(true);
+      const okPassword = validatePassword(true);
+
+      if (!okEmail) {
+        email.focus();
+        return;
+      }
+      if (!okPassword) {
+        password.focus();
+        return;
+      }
+
+      // Simulate an async login (replace with a real API call)
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Logging in…";
+
+      setTimeout(() => {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+
+        // Persist session only when "Remember me" is checked
+        const remember = document.getElementById("remember").checked;
+        if (remember) setSession();
+
+        showToast("Logged in successfully. Setting up your profile…", "success");
+        setTimeout(() => { window.location.href = "profile.html"; }, 600);
+      }, 1200);
+    });
+  }
+
+  /* ============================================================
+     PROFILE PAGE (profile.html)
+     ============================================================ */
+  const profileForm = document.getElementById("profile-form");
+
+  if (profileForm) {
+    // Guard: not logged in? Back to login.
+    if (getSession() !== "active") {
+      window.location.replace("index.html");
       return;
     }
 
-    // Simulate an async login (replace with a real API call)
-    loginBtn.disabled = true;
-    loginBtn.textContent = "Logging in…";
+    profileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-    setTimeout(() => {
-      loginBtn.disabled = false;
-      loginBtn.textContent = "Login";
+      const fullName = document.getElementById("full-name").value.trim();
+      const college = document.getElementById("college").value.trim();
+      const branch = document.getElementById("branch").value.trim();
+      const year = document.getElementById("year").value;
+      const skills = Array.from(
+        document.querySelectorAll('input[name="skills"]:checked')
+      ).map((cb) => cb.value);
 
-      const remember = document.getElementById("remember").checked;
-      showToast(
-        remember
-          ? "Logged in successfully (remembered ✅)"
-          : "Logged in successfully 🎉",
-        "success"
-      );
-    }, 1200);
-  });
+      let valid = true;
+      valid = requireText("full-name", "name-error", "Full name is required.", fullName) && valid;
+      valid = requireText("college", "college-error", "College name is required.", college) && valid;
+      valid = requireText("branch", "branch-error", "Branch is required.", branch) && valid;
+      valid = requireSelect("year", "year-error", "Please select your year.", year) && valid;
 
-  /* ---------- Sign up link ---------- */
-  document.getElementById("signup-link").addEventListener("click", (e) => {
-    e.preventDefault();
-    showToast("Redirecting to sign up…", "success");
-    // window.location.href = "signup.html"; // hook up your real page here
-  });
+      if (!skills.length) {
+        valid = false;
+        const el = document.getElementById("skills-error");
+        el.textContent = "Please select at least one skill.";
+        el.classList.remove("show");
+        void el.offsetWidth;
+        el.classList.add("show");
+      } else {
+        const el = document.getElementById("skills-error");
+        el.textContent = "";
+        el.classList.remove("show");
+      }
 
-  /* ---------- Toast ---------- */
+      if (!valid) return;
+
+      // Save the profile
+      try {
+        localStorage.setItem(
+          PROFILE_KEY,
+          JSON.stringify({ fullName, college, branch, year, skills })
+        );
+      } catch (_) { /* storage unavailable — ignore */ }
+
+      showToast("Profile saved!", "success");
+      setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+    });
+  }
+
+  /* ---------- Shared field validation (profile page) ---------- */
+  function requireText(id, errId, message, value) {
+    const input = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (value) {
+      input.classList.remove("invalid");
+      err.textContent = "";
+      err.classList.remove("show");
+      return true;
+    }
+    input.classList.add("invalid");
+    err.textContent = message;
+    err.classList.remove("show");
+    void err.offsetWidth;
+    err.classList.add("show");
+    return false;
+  }
+
+  function requireSelect(id, errId, message, value) {
+    const select = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (value) {
+      select.classList.remove("invalid");
+      err.textContent = "";
+      err.classList.remove("show");
+      return true;
+    }
+    select.classList.add("invalid");
+    err.textContent = message;
+    err.classList.remove("show");
+    void err.offsetWidth;
+    err.classList.add("show");
+    return false;
+  }
+
+  /* ============================================================
+     DASHBOARD PAGE (dashboard.html)
+     ============================================================ */
+  const logoutBtn = document.getElementById("logout-btn");
+
+  if (logoutBtn) {
+    // Guard: not logged in? Back to login.
+    if (getSession() !== "active") {
+      window.location.replace("index.html");
+      return;
+    }
+
+    // Render profile info
+    const profile = getProfile();
+    if (profile) {
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      set("dash-name", profile.fullName);
+      set("dash-college", profile.college);
+      set("dash-branch", profile.branch);
+      set("dash-year", profile.year);
+
+      const skillsBox = document.getElementById("dash-skills");
+      if (skillsBox && Array.isArray(profile.skills)) {
+        profile.skills.forEach((skill) => {
+          const chip = document.createElement("span");
+          chip.className = "skill-tag";
+          chip.textContent = skill;
+          skillsBox.appendChild(chip);
+        });
+      }
+    }
+
+    /* ---------- Logout ---------- */
+    logoutBtn.addEventListener("click", () => {
+      clearSession();
+      // Also wipe any saved profile so it can't be viewed without logging in again
+      try {
+        localStorage.removeItem(PROFILE_KEY);
+      } catch (_) { /* storage unavailable — ignore */ }
+
+      showToast("You have been logged out.", "");
+      setTimeout(() => { window.location.href = "index.html"; }, 600);
+    });
+  }
+
+  /* ============================================================
+     Toast (works on all pages)
+     ============================================================ */
   let toastTimer;
   function showToast(message, type = "") {
     let toast = document.querySelector(".toast");
