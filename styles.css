@@ -1,0 +1,378 @@
+/* ============================================================
+   SkillSync-AI Login — White & Pink theme
+   Mobile-first, responsive
+   ============================================================ */
+
+:root {
+  --pink-50:  #fff5f9;
+  --pink-100: #ffe4f0;
+  --pink-200: #ffc9e0;
+  --pink-400: #f472b6;
+  --pink-500: #ec4899;
+  --pink-600: #db2777;
+  --pink-700: #be185d;
+
+  --white:    #ffffff;
+  --ink:      #2d2430;
+  --muted:    #8a8090;
+  --line:     #f3dce8;
+  --error:    #e11d48;
+  --success:  #16a34a;
+
+  --radius: 16px;
+  --shadow: 0 20px 60px rgba(236, 72, 153, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--white) 0%, var(--pink-50) 45%, var(--pink-100) 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ---------- Card ---------- */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Brand ---------- */
+.brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand-logo {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--pink-400), var(--pink-600));
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(236, 72, 153, 0.35);
+}
+
+.brand h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.brand h1 span {
+  color: var(--pink-500);
+}
+
+.tagline {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Fields ---------- */
+.field {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  display: inline-flex;
+  color: var(--muted);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.input-wrap input {
+  width: 100%;
+  padding: 13px 14px 13px 44px;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--pink-50);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-wrap input::placeholder {
+  color: #b9aebf;
+}
+
+/* right padding only on password field (has toggle button) */
+#password {
+  padding-right: 46px;
+}
+
+.input-wrap input:focus {
+  background: var(--white);
+  border-color: var(--pink-400);
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
+}
+
+.input-wrap input:focus ~ .input-icon,
+.input-wrap:has(input:focus) .input-icon {
+  color: var(--pink-500);
+}
+
+/* invalid state */
+.input-wrap input.invalid {
+  border-color: var(--error);
+  background: #fff1f2;
+}
+
+.input-wrap input.invalid:focus {
+  box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.12);
+}
+
+/* ---------- Password toggle ---------- */
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: var(--pink-600);
+  background: var(--pink-50);
+}
+
+.toggle-password:focus-visible {
+  outline: 2px solid var(--pink-500);
+  outline-offset: 2px;
+}
+
+/* ---------- Error message ---------- */
+.error-msg {
+  display: block;
+  min-height: 16px;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--error);
+  font-weight: 500;
+}
+
+.error-msg.show {
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+/* ---------- Row: remember / forgot ---------- */
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 0 18px;
+}
+
+.remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+  cursor: pointer;
+  margin: 0;
+  font-weight: 500;
+}
+
+.remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--pink-500);
+  cursor: pointer;
+}
+
+/* ---------- Links ---------- */
+.link {
+  font-size: 13.5px;
+  color: var(--pink-600);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link.strong {
+  font-weight: 700;
+}
+
+/* ---------- Primary button ---------- */
+.btn-primary {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(236, 72, 153, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(236, 72, 153, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--pink-700);
+  outline-offset: 3px;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Sign up ---------- */
+.signup-text {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--ink);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 100;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error   { background: var(--error); }
+
+/* ---------- Mobile tweaks ---------- */
+@media (max-width: 480px) {
+  .page {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+
+  .brand h1 {
+    font-size: 23px;
+  }
+
+  .input-wrap input {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .btn-primary {
+    padding: 15px 16px;
+  }
+}
+
+/* ---------- Larger screens ---------- */
+@media (min-width: 900px) {
+  .page {
+    padding: 40px;
+  }
+
+  .login-card {
+    max-width: 440px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
