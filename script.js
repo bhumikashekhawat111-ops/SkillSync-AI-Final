@@ -1,580 +1,501 @@
 /* ============================================================
-   SkillSync-AI — login, profile & dashboard logic
+   SkillSync-AI — Login, Profile & Dashboard
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
+
   const SESSION_KEY = "skillsync_session";
   const PROFILE_KEY = "skillsync_profile";
 
-  /* ---------- Session helpers (shared by all pages) ---------- */
+  /* ============================================================
+     SESSION
+     ============================================================ */
+
   function getSession() {
-    try {
-      return localStorage.getItem(SESSION_KEY);
-    } catch (_) {
-      return null;
-    }
+    return localStorage.getItem(SESSION_KEY);
   }
 
   function setSession() {
-    try {
-      localStorage.setItem(SESSION_KEY, "active");
-    } catch (_) { /* storage unavailable — ignore */ }
+    localStorage.setItem(SESSION_KEY, "active");
   }
 
   function clearSession() {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-    } catch (_) { /* storage unavailable — ignore */ }
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
   }
 
   function getProfile() {
     try {
       return JSON.parse(localStorage.getItem(PROFILE_KEY));
-    } catch (_) {
+    } catch (e) {
       return null;
     }
   }
 
-  /* ============================================================
-     LOGIN PAGE (index.html)
-     ============================================================ */
-  const form = document.getElementById("login-form");
 
-n  /* ============================================================
-   OPPORTUNITY DATA - skill matching feature (Part 1A)
-   ============================================================ */
+  /* ============================================================
+     LOGIN PAGE
+     ============================================================ */
+
+  const loginForm = document.getElementById("login-form");
+
+  if (loginForm) {
+
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (!email.value.trim()) {
+        alert("Please enter your email.");
+        return;
+      }
+
+      if (!email.value.includes("@")) {
+        alert("Please enter a valid email.");
+        return;
+      }
+
+      if (password.value.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+      }
+
+      setSession();
+
+      // Move to profile page
+      window.location.href = "profile.html";
+    });
+  }
+
+
+  /* ============================================================
+     PROFILE PAGE
+     ============================================================ */
+
+  const profileForm = document.getElementById("profile-form");
+
+  if (profileForm) {
+
+    // User must login first
+    if (getSession() !== "active") {
+      window.location.href = "index.html";
+      return;
+    }
+
+    profileForm.addEventListener("submit", function (e) {
+
+      e.preventDefault();
+
+      const fullName =
+        document.getElementById("full-name").value.trim();
+
+      const college =
+        document.getElementById("college").value.trim();
+
+      const branch =
+        document.getElementById("branch").value.trim();
+
+      const year =
+        document.getElementById("year").value;
+
+      const skills =
+        Array.from(
+          document.querySelectorAll('input[name="skills"]:checked')
+        ).map(skill => skill.value);
+
+
+      /* ---------- Validation ---------- */
+
+      if (!fullName) {
+        alert("Please enter your full name.");
+        return;
+      }
+
+      if (!college) {
+        alert("Please enter your college name.");
+        return;
+      }
+
+      if (!branch) {
+        alert("Please enter your branch.");
+        return;
+      }
+
+      if (!year) {
+        alert("Please select your year.");
+        return;
+      }
+
+      if (skills.length === 0) {
+        alert("Please select at least one skill.");
+        return;
+      }
+
+
+      /* ---------- Save Profile ---------- */
+
+      const profile = {
+        fullName: fullName,
+        college: college,
+        branch: branch,
+        year: year,
+        skills: skills
+      };
+
+      localStorage.setItem(
+        PROFILE_KEY,
+        JSON.stringify(profile)
+      );
+
+
+      /* ---------- Open Dashboard ---------- */
+
+      window.location.href = "dashboard.html";
+
+    });
+  }
+
+
+  /* ============================================================
+     OPPORTUNITY DATA
+     ============================================================ */
+
   const OPPORTUNITIES = [
+
     {
       id: 1,
       company: "TechNova Solutions",
       role: "Software Engineering Intern",
-      requiredSkills: ["JavaScript", "HTML5", "CSS3"],
-      openingDate: "2024-01-15",
-      applicationDeadline: "2024-02-15",
-      startDate: "2024-02-01",
+      requiredSkills: ["JavaScript", "HTML & CSS"],
+      applicationDeadline: "2026-10-15"
     },
+
     {
       id: 2,
       company: "DataFlow Analytics",
       role: "Data Science Intern",
-      requiredSkills: ["Python", "Pandas", "NumPy"],
-      openingDate: "2024-01-20",
-      applicationDeadline: "2024-02-20",
-      startDate: "2024-02-10",
+      requiredSkills: ["Python", "Data Analysis", "SQL"],
+      applicationDeadline: "2026-10-20"
     },
+
     {
       id: 3,
       company: "CloudScale Corp",
       role: "Cloud Infrastructure Intern",
-      requiredSkills: ["AWS Cloud", "Docker", "Kubernetes"],
-      openingDate: "2024-01-25",
-      applicationDeadline: "2024-02-25",
-      startDate: "2024-02-15",
+      requiredSkills: ["AWS Cloud", "Docker"],
+      applicationDeadline: "2026-10-25"
     },
+
     {
       id: 4,
       company: "WebDev Studios",
       role: "Frontend Developer Intern",
-      requiredSkills: ["React", "JavaScript", "HTML5"],
-      openingDate: "2024-01-10",
-      applicationDeadline: "2024-02-10",
-      startDate: "2024-01-28",
+      requiredSkills: ["React", "JavaScript", "HTML & CSS"],
+      applicationDeadline: "2026-11-01"
     },
+
     {
       id: 5,
       company: "AI Innovations Inc.",
       role: "Machine Learning Intern",
-      requiredSkills: ["Python", "Machine Learning", "TensorFlow"],
-      openingDate: "2024-02-01",
-      applicationDeadline: "2024-03-01",
-      startDate: "2024-03-15",
+      requiredSkills: ["Python", "Machine Learning", "Data Analysis"],
+      applicationDeadline: "2026-11-05"
     },
+
     {
       id: 6,
       company: "FullStack Labs",
       role: "Full Stack Developer Intern",
       requiredSkills: ["JavaScript", "React", "Node.js"],
-      openingDate: "2024-02-05",
-      applicationDeadline: "2024-03-05",
-      startDate: "2024-03-18",
+      applicationDeadline: "2026-11-10"
     },
+
     {
       id: 7,
       company: "CyberSecure Ltd.",
       role: "Security Operations Intern",
-      requiredSkills: ["Problem Solving", "Network Security", "Python"],
-      openingDate: "2024-02-10",
-      applicationDeadline: "2024-03-10",
-      startDate: "2024-03-20",
+      requiredSkills: ["Python", "Problem Solving"],
+      applicationDeadline: "2026-11-15"
     },
+
     {
       id: 8,
       company: "DesignCo",
       role: "UI/UX Design Intern",
-      requiredSkills: ["UI/UX Design", "Figma", "Adobe Creative Suite"],
-      openingDate: "2024-02-15",
-      applicationDeadline: "2024-03-15",
-      startDate: "2024-03-25",
+      requiredSkills: ["UI/UX Design", "Figma"],
+      applicationDeadline: "2026-11-20"
     },
+
     {
       id: 9,
       company: "GitHub Enterprise",
       role: "Developer Experience Intern",
-      requiredSkills: ["Git & GitHub", "JavaScript", "Markdown"],
-      openingDate: "2024-02-20",
-      applicationDeadline: "2024-03-20",
-      startDate: "2024-04-01",
+      requiredSkills: ["Git & GitHub", "JavaScript"],
+      applicationDeadline: "2026-11-25"
     },
+
     {
       id: 10,
       company: "ExcelPro Systems",
       role: "Data Analysis Intern",
       requiredSkills: ["Data Analysis", "Excel", "SQL"],
-      openingDate: "2024-02-25",
-      applicationDeadline: "2024-03-25",
-      startDate: "2024-04-05",
+      applicationDeadline: "2026-12-01"
     },
+
+    {
+      id: 11,
+      company: "Accenture",
+      role: "Data Analysis Engineer",
+      requiredSkills: ["Data Analysis", "Excel", "SQL"],
+      applicationDeadline: "2026-12-05"
+    },
+
+    {
+      id: 12,
+      company: "TCS",
+      role: "Associate Data Analysis Intern",
+      requiredSkills: ["Data Analysis", "C++", "SQL"],
+      applicationDeadline: "2026-12-10"
+    }
+
   ];
-  if (form) {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const toggleBtn = document.getElementById("toggle-password");
-    const emailError = document.getElementById("email-error");
-    const passwordError = document.getElementById("password-error");
-    const loginBtn = document.getElementById("login-btn");
 
-    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const MIN_PASSWORD_LENGTH = 6;
-
-    // Already logged in (via "Remember me")? Skip straight to profile.
-    if (getSession() === "active") {
-      window.location.replace("profile.html");
-      return;
-    }
-
-    /* ---------- Password show / hide ---------- */
-    toggleBtn.addEventListener("click", () => {
-      const hidden = password.type === "password";
-      password.type = hidden ? "text" : "password";
-
-      toggleBtn.setAttribute("aria-pressed", String(hidden));
-      toggleBtn.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
-
-      const eye = toggleBtn.querySelector(".icon-eye");
-      const eyeOff = toggleBtn.querySelector(".icon-eye-off");
-      eye.hidden = hidden;
-      eyeOff.hidden = !hidden;
-
-      password.focus();
-    });
-
-    /* ---------- Validation helpers ---------- */
-    function setError(input, msgEl, message) {
-      if (message) {
-        input.classList.add("invalid");
-        msgEl.textContent = message;
-        msgEl.classList.remove("show");
-        void msgEl.offsetWidth;
-        msgEl.classList.add("show");
-      } else {
-        input.classList.remove("invalid");
-        msgEl.textContent = "";
-        msgEl.classList.remove("show");
-      }
-    }
-
-    function validateEmail(showError = true) {
-      const value = email.value.trim();
-      let message = "";
-
-      if (!value) message = "Email is required.";
-      else if (!EMAIL_RE.test(value)) message = "Enter a valid email address.";
-
-      if (showError || message === "") setError(email, emailError, message);
-      return message === "";
-    }
-
-    function validatePassword(showError = true) {
-      const value = password.value;
-      let message = "";
-
-      if (!value) message = "Password is required.";
-      else if (value.length < MIN_PASSWORD_LENGTH)
-        message = "Password must be at least 6 characters.";
-
-      if (showError || message === "") setError(password, passwordError, message);
-      return message === "";
-    }
-
-    /* ---------- Live feedback ---------- */
-    email.addEventListener("blur", () => validateEmail(true));
-    email.addEventListener("input", () => {
-      if (emailError.textContent) validateEmail(true);
-    });
-
-    password.addEventListener("blur", () => validatePassword(true));
-    password.addEventListener("input", () => {
-      if (passwordError.textContent) validatePassword(true);
-    });
-
-    /* ---------- Submit ---------- */
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const okEmail = validateEmail(true);
-      const okPassword = validatePassword(true);
-
-      if (!okEmail) {
-        email.focus();
-        return;
-      }
-      if (!okPassword) {
-        password.focus();
-        return;
-      }
-
-      // Simulate an async login (replace with a real API call)
-      loginBtn.disabled = true;
-      loginBtn.textContent = "Logging in…";
-
-      setTimeout(() => {
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Login";
-
-        // Persist session only when "Remember me" is checked
-        const remember = document.getElementById("remember").checked;
-        if (remember) setSession();
-
-        showToast("Logged in successfully. Setting up your profile…", "success");
-        setTimeout(() => { window.location.href = "profile.html"; }, 600);
-      }, 1200);
-    });
-  }
 
   /* ============================================================
-     PROFILE PAGE (profile.html)
+     MATCHING FUNCTION
      ============================================================ */
-  const profileForm = document.getElementById("profile-form");
 
-  if (profileForm) {
-    // Guard: not logged in? Back to login.
-    if (getSession() !== "active") {
-      window.location.replace("index.html");
-      return;
-    }
+  function calculateMatch(requiredSkills, userSkills) {
 
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+    const matchingSkills = requiredSkills.filter(skill =>
+      userSkills.includes(skill)
+    );
 
-      const fullName = document.getElementById("full-name").value.trim();
-      const college = document.getElementById("college").value.trim();
-      const branch = document.getElementById("branch").value.trim();
-      const year = document.getElementById("year").value;
-      const skills = Array.from(
-        document.querySelectorAll('input[name="skills"]:checked')
-      ).map((cb) => cb.value);
+    const missingSkills = requiredSkills.filter(skill =>
+      !userSkills.includes(skill)
+    );
 
-      let valid = true;
-      valid = requireText("full-name", "name-error", "Full name is required.", fullName) && valid;
-      valid = requireText("college", "college-error", "College name is required.", college) && valid;
-      valid = requireText("branch", "branch-error", "Branch is required.", branch) && valid;
-      valid = requireSelect("year", "year-error", "Please select your year.", year) && valid;
+    const percentage =
+      (matchingSkills.length / requiredSkills.length) * 100;
 
-      if (!skills.length) {
-        valid = false;
-        const el = document.getElementById("skills-error");
-        el.textContent = "Please select at least one skill.";
-        el.classList.remove("show");
-        void el.offsetWidth;
-        el.classList.add("show");
-      } else {
-        const el = document.getElementById("skills-error");
-        el.textContent = "";
-        el.classList.remove("show");
-      }
-
-      if (!valid) return;
-
-      // Save the profile
-      try {
-        localStorage.setItem(
-          PROFILE_KEY,
-          JSON.stringify({ fullName, college, branch, year, skills })
-        );
-      } catch (_) { /* storage unavailable — ignore */ }
-
-      showToast("Profile saved!", "success");
-      setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
-    });
+    return {
+      matchingSkills: matchingSkills,
+      missingSkills: missingSkills,
+      percentage: percentage
+    };
   }
 
-  /* ---------- Shared field validation (profile page) ---------- */
-  function requireText(id, errId, message, value) {
-    const input = document.getElementById(id);
-    const err = document.getElementById(errId);
-    if (value) {
-      input.classList.remove("invalid");
-      err.textContent = "";
-      err.classList.remove("show");
-      return true;
-    }
-    input.classList.add("invalid");
-    err.textContent = message;
-    err.classList.remove("show");
-    void err.offsetWidth;
-    err.classList.add("show");
-    return false;
-  }
-
-  function requireSelect(id, errId, message, value) {
-    const select = document.getElementById(id);
-    const err = document.getElementById(errId);
-}
-
-/* ============================================================
-   REUSABLE MATCHING LOGIC (Task 1B)
-   Accepts an opportunity object and user skills array, returns match data
-   ============================================================ */
-function calculateOpportunityMatch(opp, userSkills) {
-  const requiredSet = new Set(opp.requiredSkills);
-  const userSet = new Set(userSkills);
-  const matching = opp.requiredSkills.filter((s) => userSet.has(s));
-  const missing = opp.requiredSkills.filter((s) => !userSet.has(s));
-  const pct = ((matching.length / opp.requiredSkills.length) * 100).toFixed(1);
-  return { pct, matching, missing };
-}
-
-/* ============================================================
-   OPPORTUNITY REMINDER FEATURE (Task 2)
-   Shows reminder timing options and displays reminder status
-   ============================================================ */
-function renderOpportunityReminders(opportunities, matchedOpportunities, userSkills) {
-  const remindersSection = document.createElement("div");
-  remindersSection.className = "opportunity-reminders";
-  remindersSection.innerHTML = '<h3>Application Reminders</h3>';
-
-  const remindersGrid = document.createElement("div");
-  remindersGrid.className = "reminders-grid";
-
-  opportunities.forEach((opp, idx) => {
-    const match = matchedOpportunities[idx];
-    const pct = match ? match.pct : "0";
-    const deadline = new Date(opp.applicationDeadline);
-    const today = new Date();
-    const startDate = new Date(opp.startDate);
-    const daysRemaining = Math.max(0, Math.ceil((deadline - today) / (1000 * 60 * 60 * 24)));
-    const daysSinceStart = Math.max(0, Math.ceil((today - startDate) / (1000 * 60 * 60 * 24)));
-
-    // Determine reminder timing options based on days remaining
-    let timingOptions = [];
-    if (daysRemaining <= 1) {
-      timingOptions = ["deadline day"];
-    } else if (daysRemaining <= 3) {
-      timingOptions = ["1 day before", "deadline day"];
-    } else if (daysRemaining <= 7) {
-      timingOptions = ["3 days before", "1 day before", "deadline day"];
-    } else {
-      timingOptions = ["7 days before", "3 days before", "1 day before", "deadline day"];
-    }
-
-    // Check if user already set a reminder for this opportunity
-    const savedReminders = JSON.parse(localStorage.getItem("skillsync_reminders") || "{}");
-    const oppKey = opp.id;
-    const existingReminder = savedReminders[oppKey] || null;
-
-    const card = document.createElement("div");
-    card.className = "reminder-card";
-    card.innerHTML = `
-      <div>
-        <strong>${opp.company}: ${opp.role}</strong>
-        <br />
-        <span>Match: ${pct}%</span>
-      </div>
-      <div>
-        <span>Starts: ${opp.startDate}</span>
-        <br />
-        <span>Deadline: ${opp.applicationDeadline} (${daysRemaining}d remaining)</span>
-        <br />
-        <span>Matching Skills: ${opp.requiredSkills.filter(s => userSkills.includes(s)).join(", ") || "None"}</span>
-      </div>
-      <div>
-        <select class="reminder-timing" data-opp-id="${opp.id}">
-          ${timingOptions.map(opt => `<option value="${opt}" ${existingReminder === opt ? "selected" : ""}>${opt}</option>`).join("")}
-        </select>
-        <button class="btn-set-reminder" data-opp-id="${opp.id}">Set Reminder</button>
-      </div>
-    `;
-
-    // Show existing reminder status
-    if (existingReminder) {
-      const statusEl = document.createElement("span");
-      statusEl.className = "reminder-status";
-      statusEl.textContent = `Reminder set for ${existingReminder}`;
-      card.querySelector(".reminder-timing").after(statusEl);
-    }
-
-    remindersGrid.appendChild(card);
-  });
-
-  remindersSection.appendChild(remindersGrid);
-
-  // Handle setting reminders
-  remindersSection.addEventListener("click", (e) => {
-    const target = e.target;
-    const btn = target.closest(".btn-set-reminder");
-    if (btn) {
-      const oppId = parseInt(btn.dataset.oppId);
-      const timingSelect = btn.previousElementSibling;
-      const selectedTiming = timingSelect.value;
-
-      // Save reminder
-      let savedReminders = JSON.parse(localStorage.getItem("skillsync_reminders") || "{}");
-      savedReminders[oppId] = selectedTiming;
-      localStorage.setItem("skillsync_reminders", JSON.stringify(savedReminders));
-
-      // Update UI
-      showToast(`Reminder set for ${daysRemaining}d: ${selectedTiming}`, "success");
-
-      // Re-render to show status
-      renderOpportunityReminders(opportunities, matchedOpportunities, userSkills);
-    }
-  });
-
-  const skillsBoxParent = document.getElementById("dash-skills").parentNode;
-  skillsBoxParent.insertBefore(remindersSection, skillsBox.nextSibling.nextSibling);
-}
-
-/* ============================================================
-     DASHBOARD PAGE (dashboard.html)
-    if (value) {
-      select.classList.remove("invalid");
-      err.textContent = "";
-      err.classList.remove("show");
-      return true;
-    }
-    select.classList.add("invalid");
-    err.textContent = message;
-    err.classList.remove("show");
-    void err.offsetWidth;
-    err.classList.add("show");
-    return false;
-  }
 
   /* ============================================================
-     DASHBOARD PAGE (dashboard.html)
+     DASHBOARD PAGE
      ============================================================ */
+
   const logoutBtn = document.getElementById("logout-btn");
 
   if (logoutBtn) {
-    // Guard: not logged in? Back to login.
+
+    // User must login
     if (getSession() !== "active") {
-      window.location.replace("index.html");
+      window.location.href = "index.html";
       return;
     }
 
-    // Render profile info
     const profile = getProfile();
-    if (profile) {
-      const set = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-      set("dash-name", profile.fullName);
-      set("dash-college", profile.college);
-      set("dash-branch", profile.branch);
-      set("dash-year", profile.year);
 
-      const skillsBox = document.getElementById("dash-skills");
-      if (skillsBox && Array.isArray(profile.skills)) {
-        profile.skills.forEach((skill) => {
-          const chip = document.createElement("span");
-          chip.className = "skill-tag";
-          chip.textContent = skill;
-          skillsBox.appendChild(chip);
-        });
-      }
-
-      // Calculate and display opportunity matches
-      const userSkills = profile.skills || [];
-      const matchedOpportunities = OPPORTUNITIES.map((opp) =>
-        calculateOpportunityMatch(opp, userSkills)
-      );
-
-      // Sort by highest match percentage (descending)
-      matchedOpportunities.sort((a, b) => b.pct - a.pct);
-
-      const matchesSection = document.createElement("div");
-      matchesSection.className = "opportunity-matches";
-      matchesSection.innerHTML = '<h3>Opportunity Matches</h3>';
-      const matchesGrid = document.createElement("div");
-      matchesGrid.className = "matches-grid";
-      matchedOpportunities.forEach((match, idx) => {
-        const opp = OPPORTUNITIES[idx];
-        const { pct, matching, missing } = match;
-        // Recommended skills are the missing skills from this opportunity's required list
-        // (skills the user should learn to improve their match)
-        const recommended = missing.slice(0, 2);
-        const card = document.createElement("div");
-        card.className = "match-card";
-        card.innerHTML = `
-          <div>
-            <strong>${opp.company}: ${opp.role}</strong>
-            <br />
-            <span>Match: ${pct}%</span>
-          </div>
-          <div>
-            <span>Matching: ${matching.length > 0 ? matching.join(", ") : "None"}</span>
-            <br />
-            <span>Missing: ${missing.length > 0 ? missing.join(", ") : "None"}</span>
-            ${recommended.length > 0
-              ? `<br /><span>Recommended: ${recommended.join(", ")}</span>`
-              : ""}
-            <br />
-            <span>Deadline: ${opp.applicationDeadline}</span>
-          </div>
-        `;
-        matchesGrid.appendChild(card);
-      });
-      matchesSection.appendChild(matchesGrid);
-      const skillsBoxParent = document.getElementById("dash-skills").parentNode;
-      skillsBoxParent.insertBefore(matchesSection, skillsBox.nextSibling);
-
-      // Opportunity Reminder Feature (Task 2)
-      renderOpportunityReminders(OPPORTUNITIES, matchedOpportunities, profile.skills || []);
+    if (!profile) {
+      window.location.href = "profile.html";
+      return;
     }
 
-    /* ---------- Logout ---------- */
-    logoutBtn.addEventListener("click", () => {
-      clearSession();
-      // Also wipe any saved profile so it can't be viewed without logging in again
-      try {
-        localStorage.removeItem(PROFILE_KEY);
-      } catch (_) { /* storage unavailable — ignore */ }
 
-      showToast("You have been logged out.", "");
-      setTimeout(() => { window.location.href = "index.html"; }, 600);
+    /* ---------- Show Profile Details ---------- */
+
+    document.getElementById("dash-name").textContent =
+      profile.fullName;
+
+    document.getElementById("dash-college").textContent =
+      profile.college;
+
+    document.getElementById("dash-branch").textContent =
+      profile.branch;
+
+    document.getElementById("dash-year").textContent =
+      profile.year;
+
+
+    /* ---------- Show Selected Skills ---------- */
+
+    const skillsBox =
+      document.getElementById("dash-skills");
+
+    skillsBox.innerHTML = "";
+
+    profile.skills.forEach(skill => {
+
+      const skillElement =
+        document.createElement("span");
+
+      skillElement.className = "skill-tag";
+
+      skillElement.textContent = skill;
+
+      skillsBox.appendChild(skillElement);
+
     });
+
+
+    /* ============================================================
+       OPPORTUNITY MATCHES
+       ============================================================ */
+
+    const matchesSection =
+      document.createElement("div");
+
+    matchesSection.className =
+      "opportunity-matches";
+
+
+    const heading =
+      document.createElement("h3");
+
+    heading.textContent =
+      "Opportunity Matches";
+
+    matchesSection.appendChild(heading);
+
+
+    const matchesGrid =
+      document.createElement("div");
+
+    matchesGrid.className =
+      "matches-grid";
+
+
+    /* ---------- Calculate every opportunity ---------- */
+
+    const results = OPPORTUNITIES.map(opportunity => {
+
+      const match =
+        calculateMatch(
+          opportunity.requiredSkills,
+          profile.skills
+        );
+
+      return {
+        opportunity: opportunity,
+        ...match
+      };
+
+    });
+
+
+    /* ---------- Sort highest percentage first ---------- */
+
+    results.sort(
+      (a, b) =>
+        b.percentage - a.percentage
+    );
+
+
+    /* ---------- Create Match Cards ---------- */
+
+    results.forEach(result => {
+
+      const opportunity =
+        result.opportunity;
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "match-card";
+
+
+      card.innerHTML = `
+
+        <h4>
+          ${opportunity.company}
+        </h4>
+
+        <p>
+          <strong>
+            ${opportunity.role}
+          </strong>
+        </p>
+
+        <p>
+          <strong>
+            Match: ${result.percentage.toFixed(0)}%
+          </strong>
+        </p>
+
+        <p>
+          <strong>
+            Matching Skills:
+          </strong>
+          ${result.matchingSkills.length
+            ? result.matchingSkills.join(", ")
+            : "None"}
+        </p>
+
+        <p>
+          <strong>
+            Missing Skills:
+          </strong>
+          ${result.missingSkills.length
+            ? result.missingSkills.join(", ")
+            : "None"}
+        </p>
+
+        <p>
+          <strong>
+            Required Skills:
+          </strong>
+          ${opportunity.requiredSkills.join(", ")}
+        </p>
+
+        <p>
+          <strong>
+            Deadline:
+          </strong>
+          ${opportunity.applicationDeadline}
+        </p>
+
+      `;
+
+      matchesGrid.appendChild(card);
+
+    });
+
+
+    matchesSection.appendChild(matchesGrid);
+
+
+    /* ---------- Put matches below skills ---------- */
+
+    skillsBox.parentNode.insertBefore(
+      matchesSection,
+      skillsBox.nextSibling
+    );
+
+
+    /* ============================================================
+       LOGOUT
+       ============================================================ */
+
+    logoutBtn.addEventListener("click", function () {
+
+      clearSession();
+
+      localStorage.removeItem(PROFILE_KEY);
+
+      window.location.href =
+        "index.html";
+
+    });
+
   }
 
-  /* ============================================================
-     Toast (works on all pages)
-     ============================================================ */
-  let toastTimer;
-  function showToast(message, type = "") {
-    let toast = document.querySelector(".toast");
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.className = "toast";
-      toast.setAttribute("role", "status");
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.className = `toast show ${type}`;
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2600);
-  }
 });
